@@ -7,7 +7,7 @@ import random
 import time
 import sys
 from camt import Ui_MainWindow
-from PyQt5.QtWidgets import QApplication, QComboBox, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 class MyMainWindow(QMainWindow, Ui_MainWindow):
     def __init__( self, parent=None ):  #初始函数
         super(MyMainWindow, self).__init__(parent) #继承父类函数
@@ -22,14 +22,21 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         '''
         创建表格的槽函数
         '''
+        import AutoExcel
+        ires = AutoExcel.func_inquiry_inputer()
+        #输入法检测，提示
+        if ires == 2:
+            anser = QMessageBox.question(self, '提示', '当前为中文输入法，继续运行将改为英文输入法，继续?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)      #"退出"代表的是弹出框的标题,"你确认退出.."表示弹出框的内容
+        if anser == QMessageBox.No:
+            return  
         class_csdata_creator = CamshaftTable() #创建一个类实例
         index = self.comboBox.currentIndex()
         if index == 0:
             path = class_csdata_creator.method_create_cstable('145')
-            string = '已保存为:\n'+path+'\n! 如果电脑出现异常，请按一次 alt 键'
+            string = '已保存为:\n'+path+'\n\n! 如果电脑出现异常，请按一次 alt 键'
         elif index == 1:
             path =  class_csdata_creator.method_create_cstable('80')
-            string = '已保存为:\n'+path+'\n! 如果电脑出现异常，请按一次 alt 键'
+            string = '已保存为:\n'+path+'\n\n! 如果电脑出现异常，请按一次 alt 键'
         else:
             string = '错误，操作失败'
         self.textBrowser.setText(string)
